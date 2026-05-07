@@ -68,7 +68,9 @@ model.eval()
 
 ## Tasks
 
-### Task 1 — Export to ONNX
+### Task 1 — Export to ONNX and Verify
+
+**Part A — Export.**
 
 1. Define an example input matching the validation pipeline:
 
@@ -97,7 +99,7 @@ print("ONNX model is valid.")
 
 4. Print the file size of the exported model in MB.
 
-### Task 2 — Numerical Equivalence Check
+**Part B — Numerical equivalence check.**
 
 Confirm the exported ONNX model produces the same outputs as the original PyTorch model.
 
@@ -110,7 +112,7 @@ session = ort.InferenceSession("flowers_resnet18.onnx")
 2. Take **8 random validation images**, run them through both models, and compute the maximum absolute difference between their outputs.
 3. Assert the difference is below `1e-4`. If not, investigate (different normalisation, dropout still on, etc.).
 
-### Task 3 — Build an Inference Pipeline
+### Task 2 — Build an Inference Pipeline
 
 Create a clean inference-only function in a separate Python file `inference.py` that:
 
@@ -152,7 +154,7 @@ In your notebook:
 1. Import this class and run inference on 5 test images. Print the top-3 predictions for each.
 2. Verify the predictions match what your PyTorch model produces for the same images.
 
-### Task 4 — Quantise to INT8
+### Task 3 — Quantise to INT8
 
 Apply post-training dynamic quantisation:
 
@@ -170,12 +172,12 @@ Then:
 
 1. Print the file size of the quantised model and the size ratio vs FP32.
 2. Load the quantised model into a new ONNX Runtime session.
-3. Run it on the same validation set used in Task 2 and compare the outputs with the FP32 ONNX model — report the maximum and mean absolute difference.
+3. Run it on the same validation set used in Task 1 and compare the outputs with the FP32 ONNX model — report the maximum and mean absolute difference.
 4. Run it on the held-out test set (or whatever test loader you have from yesterday) and report the test accuracy. Compare to the FP32 ONNX model's test accuracy.
 
 In a markdown cell, comment on the trade-off: how much accuracy did you lose, and how much smaller is the model?
 
-### Task 5 — Latency Benchmark
+### Task 4 — Latency Benchmark
 
 Benchmark all three variants on the same hardware.
 
@@ -189,14 +191,6 @@ Benchmark all three variants on the same hardware.
 | ONNX (INT8) | … | … | … |
 
 3. In a markdown cell, comment on what you see. Was the speedup what you expected? Where did most of the gain come from?
-
-### Task 6 — Edge Case (Stretch)
-
-This is optional but recommended.
-
-1. Try inferring on an image with an unusual aspect ratio (very wide or very tall). Confirm your preprocessing handles it gracefully.
-2. Try a batch of 16 images at once and compare the per-image latency to single-image inference. Quantify the throughput gain.
-3. In a markdown cell, comment on when you'd choose to batch and when you'd serve single inputs.
 
 ## Submission
 
